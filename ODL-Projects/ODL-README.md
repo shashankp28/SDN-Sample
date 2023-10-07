@@ -35,6 +35,8 @@ Username: admin
 Password: admin
 ```
 
+6. 3. The controller can be connected to the Mininet topology using the following port `6653`
+
 ### Sample hello project
 
 1. The example `hello` project in this folder can be built using the following command:
