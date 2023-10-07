@@ -46,6 +46,9 @@ cd /home/ODL-Projects/hello
 mvn clean install -DskipTests -Dcheckstyle.skip
 ```
 
+**Note**: Focus on `/home/ODL-Projects/hello/impl/src/main/java/org/opendaylight/hello/impl` and
+`/home/ODL-Projects/hello/api/src/main/yang` directoies.
+
 2. Run the project using the following command:
 
 ```
@@ -55,7 +58,7 @@ mvn clean install -DskipTests -Dcheckstyle.skip
 3. Wait for sometime and open the GUI to make the Hello RPC
 
 ```
-http://<ip-address>:8181/apidoc/explorer/index.html#!/hello(2021-03-21)
+http://<ip-address>:8181/apidoc/explorer/index.html#!/hello(2015-01-05)
 ```
 
 **Note:** The login credentials are the same as mentioned above.

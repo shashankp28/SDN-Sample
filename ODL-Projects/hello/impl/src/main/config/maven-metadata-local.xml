@@ -3,7 +3,7 @@
   <groupId>org.opendaylight.hello</groupId>
   <artifactId>hello-impl</artifactId>
   <versioning>
-    <lastUpdated>20231007182827</lastUpdated>
+    <lastUpdated>20231007201244</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
@@ -12,7 +12,7 @@
         <classifier>config</classifier>
         <extension>xml</extension>
         <value>1.0.0-SNAPSHOT</value>
-        <updated>20231007182827</updated>
+        <updated>20231007201244</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

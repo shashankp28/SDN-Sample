@@ -3,7 +3,7 @@ module hello {
     namespace "urn:opendaylight:params:xml:ns:yang:hello";
     prefix "hello";
 
-    revision "2021-03-21" {
+    revision "2015-01-05" {
         description "Initial revision of hello model";
     }
 
