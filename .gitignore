@@ -22,3 +22,22 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+*.class
+**/target
+bin/
+dist
+**/logs
+*~
+target
+target-ide
+.classpath
+.project
+.settings
+.idea
+xtend-gen
+yang-gen-config
+yang-gen-sal
+classes
+.DS_STORE
+.metadata
