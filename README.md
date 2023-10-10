@@ -40,7 +40,7 @@ newgrp docker
 3. Run the following command to pull and run Docker image for SDN development environment
 
 ```
-docker run -d -it --restart always --name SDN shashankp2832/sdn:latest
+docker run -d -it --restart always --name SDN -v $(pwd)/home:/home shashankp2832/sdn:latest
 ```
 
 4. Once the container is Run, you should be able to see it in the `Containers` Tab of the Docker Extension for VSCode.
