@@ -30,3 +30,20 @@ app activate org.onosproject.fwd
 ```
 
 4. Or they can be installed using the GUI.
+
+## Creating a new project
+
+1. To create a new project, run the following command:
+
+```
+onos-create-app app org.foo foo-app 1.0-SNAPSHOT org.foo.app
+```
+
+2. Build the application
+
+```
+cd foo-app
+mvn clean install
+```
+
+3. The target `oar` file will be created in the `target` directory which can be added to ONOS using the GUI or the CLI.
