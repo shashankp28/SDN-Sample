@@ -16,10 +16,11 @@ Username: onos
 Password: rocks
 ```
 
-3. The command line interface (CLI) can be accessed at:
+3. To access CLI of onos run two commands in separate terminals
 
 ```
-bazel run onos-local clean debug
+Terminal 1: bazel run onos-local clean debug
+Terminal 2: onos localhost
 ```
 
 4. The relevant Apps can be installed using the following commands:
