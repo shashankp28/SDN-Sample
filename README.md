@@ -31,6 +31,9 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker $USER
 newgrp docker
+
+echo "To check if docker is installed properly, run the following command"
+docker run hello-world
 ```
 
 **Note:** Make sure that you are able to add Docker to sudo group. So as to run Docker commands without sudo.
