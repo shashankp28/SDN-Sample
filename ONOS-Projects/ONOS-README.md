@@ -19,7 +19,7 @@ Password: rocks
 3. To access CLI of onos run two commands in separate terminals
 
 ```
-Terminal 1: bazel run onos-local clean debug
+Terminal 1: cd /onos && bazel run onos-local clean debug
 Terminal 2: onos localhost
 ```
 
