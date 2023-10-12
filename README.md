@@ -43,14 +43,15 @@ newgrp docker
 git clone https://github.com/shashankp28/SDN-Sample.git
 ```
 
-3. Run the following command to pull and run Docker image for SDN development environment
+3. Go into the repo, build and run the docker container
 
 ```
-docker run -d -it --restart always --name SDN -v $(pwd)/SDN-Sample:/home shashankp2832/sdn:latest
+cd SDN-Sample
+docker build --tag 'sdn' .
+docker run -d -it --restart always --name SDN -v $(pwd):/home shashankp2832/sdn:latest
 ```
 
 4. Once the container is Run, you should be able to see it in the `Containers` Tab of the Docker Extension for VSCode.
-
 ```
 Container Name: SDN
 ```
