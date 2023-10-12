@@ -62,6 +62,7 @@ RUN ln -s /usr/bin/python2 /usr/bin/python
 RUN apt install zip -y
 RUN cd onos && bazel build onos; exit 0
 RUN cd onos && bazel build onos
+ENV ONOS_ROOT /onos
 ENV PATH /onos/tools/dev/bin:${PATH}
 ENV PATH /onos/tools/test/bin:${PATH}
 ENV PATH /onos/tools/package/runtime/bin:${PATH}
