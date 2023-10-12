@@ -47,11 +47,13 @@ git clone https://github.com/shashankp28/SDN-Sample.git
 
 ```
 cd SDN-Sample
+echo "This may take a while, please be patient"
 docker build --tag 'sdn' .
-docker run -d -it --restart always --name SDN -v $(pwd):/home shashankp2832/sdn:latest
+docker run -d -it --restart always --name SDN -v $(pwd):/home sdn:latest
 ```
 
 4. Once the container is Run, you should be able to see it in the `Containers` Tab of the Docker Extension for VSCode.
+
 ```
 Container Name: SDN
 ```
@@ -73,3 +75,5 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ```
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
+
+3. This repository folder will be **linked to your docker container**, all that you do in the container will be **reflected in the folder and vice-versa**.
