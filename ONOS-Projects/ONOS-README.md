@@ -49,7 +49,7 @@ mvn clean install
 
 3. The target `oar` file will be created in the `target` directory which can be added to ONOS using the GUI or the CLI.
 
-## Sample Learning Switch
+## Sample Switch Connected Event
 
 1. Build the application
 
