@@ -25,23 +25,23 @@ import org.onosproject.cfg.ComponentConfigAdapter;
  */
 public class AppComponentTest {
 
-    // private AppComponent component;
+    private AppComponent component;
 
-    // @Before
-    // public void setUp() {
-    //     component = new AppComponent();
-    //     component.cfgService = new ComponentConfigAdapter();
-    //     component.activate();
-    // }
+    @Before
+    public void setUp() {
+        component = new AppComponent();
+        component.cfgService = new ComponentConfigAdapter();
+        component.activate();
+    }
 
-    // @After
-    // public void tearDown() {
-    //     component.deactivate();
-    // }
+    @After
+    public void tearDown() {
+        component.deactivate();
+    }
 
-    // @Test
-    // public void basics() {
+    @Test
+    public void basics() {
 
-    // }
+    }
 
 }

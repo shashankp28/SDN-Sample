@@ -16,8 +16,6 @@
 package org.foo.app;
 
 import org.onosproject.cfg.ComponentConfigService;
-import org.onosproject.net.device.DeviceEvent;
-import org.onosproject.net.device.DeviceListener;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -27,6 +25,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.onosproject.net.device.DeviceService;
+import org.onosproject.net.Device;
+import org.onosproject.net.device.PortStatistics;
+import org.onosproject.net.PortNumber;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import java.util.Dictionary;
 import java.util.Properties;
@@ -50,11 +56,30 @@ public class AppComponent implements SomeInterface {
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected ComponentConfigService cfgService;
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    protected DeviceService deviceService;
+
+    public void runCodePeriodically() {
+        log.info("Device Counts: " + deviceService.getDeviceCount());
+        Iterable<Device> devices = deviceService.getDevices();
+        for (Device device : devices) {
+            log.info("Device: " + device.id());
+            List<PortStatistics> portStatisticsList = deviceService.getPortDeltaStatistics(device.id());
+            for (PortStatistics portStats : portStatisticsList) {
+                PortNumber port = portStats.portNumber();
+                log.info("#### Reading port " + port + " statistics");
+                log.info("Bytes received: " + portStats.bytesReceived());
+            }
+        }
+        log.info("\n\n\n\n\n\n\n\n");
+    }
 
     @Activate
     protected void activate() {
         cfgService.registerProperties(getClass());
         log.info("Started");
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::runCodePeriodically, 0, 3, TimeUnit.SECONDS);
     }
 
     @Deactivate
@@ -75,17 +100,6 @@ public class AppComponent implements SomeInterface {
     @Override
     public void someMethod() {
         log.info("Invoked");
-    }
-
-    // Listener to detect switch connections
-    private class InternalDeviceListener implements DeviceListener {
-        @Override
-        public void event(DeviceEvent event) {
-            if (event.type() == DeviceEvent.Type.DEVICE_ADDED) {
-                // A switch has been connected
-                log.info("Switch connected: " + event.subject().id());
-            }
-        }
     }
 
 }
