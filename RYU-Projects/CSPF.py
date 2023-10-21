@@ -1,7 +1,7 @@
 """
 Centralized Shortest Path First (CFSP) Controller
 """
-from collections import deque 
+from collections import deque
 from ryu.base import app_manager
 from ryu.ofproto import ofproto_v1_4, ether
 from ryu.controller.handler import set_ev_cls, MAIN_DISPATCHER
@@ -11,7 +11,7 @@ from ryu.lib.packet import packet, ethernet
 
 
 class Graph:
-    
+
     def __init__(self):
         self.neighbours = dict()
         self.port_map = dict()
@@ -19,14 +19,14 @@ class Graph:
         self.shortest_paths = dict()
         self.switch_host_map = dict()
         self.datapath_map = dict()
-    
+
     def add_node(self, node):
         self.neighbours[node] = set()
         self.switch_host_map[node] = set()
-    
+
     def add_datapath(self, dpid, datapath):
         self.datapath_map[dpid] = datapath
-    
+
     def add_link(self, link):
         src_switch = link.src.dpid
         dst_switch = link.dst.dpid
@@ -41,16 +41,22 @@ class Graph:
     def remove_node(self, node):
         self.neighbours.pop(node)
         for neighbour in self.neighbours:
-            try: self.neighbours[neighbour].remove(node)
-            except: pass
+            try:
+                self.neighbours[neighbour].remove(node)
+            except:
+                pass
         for link in self.port_map:
             if link[0] == node or link[1] == node:
-                try: self.port_map.pop(link)
-                except: pass
+                try:
+                    self.port_map.pop(link)
+                except:
+                    pass
         for host in list(self.host_switch_map):
             if self.host_switch_map[host][0] == node:
-                try: self.host_switch_map.pop(host)
-                except: pass
+                try:
+                    self.host_switch_map.pop(host)
+                except:
+                    pass
         self.switch_host_map.pop(node)
         self.datapath_map.pop(node)
 
@@ -72,7 +78,7 @@ class Graph:
         except:
             return False
         return True
-        
+
     def compute_shortest_paths(self):
         """
         Computes shortest paths between all pairs of hosts.
@@ -96,7 +102,7 @@ class Graph:
                         queue.append(neighbour)
                         visited.add(neighbour)
                         self.shortest_paths[host][neighbour] = current_switch
-    
+
     def is_pseudo_link(self, link):
         """
         Checks whether the current link is an indirect link
@@ -105,17 +111,17 @@ class Graph:
         src_port = link.src.port_no
         for neighbour in self.neighbours[src_switch]:
             mapped_port = self.port_map.get((src_switch, neighbour))
-            if  mapped_port and mapped_port==src_port:
+            if mapped_port and mapped_port == src_port:
                 return True
         return False
-    
+
     def get_next_port(self, switch1, switch2, host):
         if switch1 == switch2:
             return self.host_switch_map[host][1]
         if (switch1, switch2) in self.port_map:
             return self.port_map[(switch1, switch2)]
         return None
-    
+
     def get_next_hop(self, dst_mac, switch):
         if (dst_mac in self.shortest_paths) and \
                 (switch in self.shortest_paths[dst_mac]):
@@ -131,6 +137,7 @@ class Graph:
         print("Shortest Paths:", self.shortest_paths)
         print("<-------------------------------------->")
 
+
 class CSFP(app_manager.RyuApp):
 
     OFP_VERSIONS = [ofproto_v1_4.OFP_VERSION]
@@ -142,7 +149,6 @@ class CSFP(app_manager.RyuApp):
         self.HIGH = 30
         self.ULTRA = 40
         self.network = Graph()
-
 
     def add_flow(self, datapath, priority, match, actions, buffer_id=None):
         instructions = [
@@ -167,7 +173,7 @@ class CSFP(app_manager.RyuApp):
                 buffer_id=buffer_id
             )
         datapath.send_msg(modification)
-    
+
     def add_packet_in(self, datapath):
         self.logger.info("Packet In Message If no flows match!")
         match = datapath.ofproto_parser.OFPMatch()
@@ -192,7 +198,7 @@ class CSFP(app_manager.RyuApp):
             instructions=instructions
         )
         datapath.send_msg(flow_mod)
-    
+
     def flood_all_arp(self, datapath):
         self.logger.info("Allowing all ARP traffic")
         match = datapath.ofproto_parser.OFPMatch(
@@ -205,13 +211,13 @@ class CSFP(app_manager.RyuApp):
             )
         ]
         self.add_flow(datapath, self.MEDIUM, match, actions)
-    
+
     def send_shortest_paths(self):
         for _, datapath in self.network.datapath_map.items():
             self.delete_all_flows(datapath)
             self.flood_all_arp(datapath)
             self.add_packet_in(datapath)
-        
+
         for host in self.network.shortest_paths:
             for switch, out_swicth in self.network.shortest_paths[host].items():
                 datapath = self.network.datapath_map[switch]
@@ -228,7 +234,7 @@ class CSFP(app_manager.RyuApp):
         host = ev.host
         self.network.add_host(host.mac, host.port.dpid, host.port.port_no)
         self.logger.info("Host %s connected to switch %s at port %s",
-                        host.mac, host.port.dpid, host.port.port_no)
+                         host.mac, host.port.dpid, host.port.port_no)
         self.network.compute_shortest_paths()
         self.send_shortest_paths()
         self.network.print_graph()
@@ -238,11 +244,11 @@ class CSFP(app_manager.RyuApp):
         host = ev.host
         self.network.remove_host(host.mac)
         self.logger.info("Host %s disconnected from switch %s at port %s",
-                        host.mac, host.port.dpid, host.port.port_no)
+                         host.mac, host.port.dpid, host.port.port_no)
         self.network.compute_shortest_paths()
         self.send_shortest_paths()
         self.network.print_graph()
-    
+
     @set_ev_cls(event.EventLinkAdd)
     def link_added_handler(self, ev):
         link = ev.link
@@ -258,7 +264,7 @@ class CSFP(app_manager.RyuApp):
     @set_ev_cls(event.EventLinkDelete)
     def link_deleted_handler(self, ev):
         link = ev.link
-        if self.network.remove_link(link):  
+        if self.network.remove_link(link):
             self.logger.info("Link Deleted: %s", link)
             self.network.compute_shortest_paths()
             self.send_shortest_paths()
@@ -279,25 +285,26 @@ class CSFP(app_manager.RyuApp):
         # Extract the Destination Mac Address and Switch ID
         destination_mac = eth.dst
         dpid = datapath.id
-        
+
         if eth.ethertype == ether.ETH_TYPE_LLDP:
             # Drop LLDP packets
             return
-        
+
         # The Fact that the controller did not find a flow for the packet
         # having the above destination MAC means the following cases has occured:
-        
+
         # -----------------------------------------------------------------
         # Case 1: The shortest path exists but the flow is not installed
         # Solution: Install the flow for out_port on the switch due to delays
         next_switch = self.network.get_next_hop(destination_mac, dpid)
         out_port = None
         if next_switch:
-            out_port = self.network.get_next_port(dpid, next_switch, destination_mac)
+            out_port = self.network.get_next_port(
+                dpid, next_switch, destination_mac)
             if not out_port:
                 out_port = ofproto.OFPP_FLOOD
         # -----------------------------------------------------------------
-        
+
         # -----------------------------------------------------------------
         # Case 2: The shortest Path has not been computed for the destination MAC
         #          This can happen if the destination MAC is not in the network
@@ -306,7 +313,7 @@ class CSFP(app_manager.RyuApp):
         else:
             out_port = ofproto.OFPP_FLOOD
         # -----------------------------------------------------------------
-        
+
         actions = [parser.OFPActionOutput(out_port)]
         # install a flow to avoid packet_in next time
         if out_port != ofproto.OFPP_FLOOD:
@@ -316,7 +323,8 @@ class CSFP(app_manager.RyuApp):
             # verify if we have a valid buffer_id, if yes avoid to send both
             # flow_mod & packet_out
             if msg.buffer_id != ofproto.OFP_NO_BUFFER:
-                self.add_flow(datapath, self.ULTRA, match, actions, msg.buffer_id)
+                self.add_flow(datapath, self.ULTRA, match,
+                              actions, msg.buffer_id)
                 return
             else:
                 self.add_flow(datapath, self.ULTRA, match, actions)
@@ -326,7 +334,7 @@ class CSFP(app_manager.RyuApp):
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
                                   in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
-        
+
     @set_ev_cls(event.EventSwitchEnter)
     def initial_switch_setup(self, event):
         switch = event.switch
