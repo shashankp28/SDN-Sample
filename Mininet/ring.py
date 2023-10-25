@@ -29,7 +29,7 @@ class MyTopology(Topo):
 topo = MyTopology(6)
 net = Mininet(
     topo=topo,
-    controller=lambda name: RemoteController(name, ip='172.17.0.2', port=6633),
+    controller=lambda name: RemoteController(name, ip='172.17.0.3', port=6633),
     switch=OVSSwitch,
     autoSetMacs=True
 )
